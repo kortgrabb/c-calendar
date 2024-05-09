@@ -4,12 +4,8 @@ A simple cli calender written in c.
 - Change month with left and right arrow
 - Exit using ESC or Q
 ## Features
-### IMPLEMENTED
-- Displays each month in the *current* year
-- Displays what weekday each day in the selected month is
-- Highlights the current day
-### TO BE IMPLEMENTED
-- View other years
-- Account for leap-years
-- Holidays
-- Reminders/Events
+- [x] Highlights the current day
+- [x] View other years
+- [x] Account for leap-years
+- [ ] Holidays
+- [ ] Reminders/Events
