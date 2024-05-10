@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include "calendar.h"
+#include "reminder.h"
+#include "string.h"
 
 #define KEY_ESCAPE 27
 
@@ -10,6 +12,10 @@
 #define BASE_YEAR 1900
 #define MONTH_NAMES {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
 #define DAYS_IN_MONTH {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+#define REMINDER_PATH "REMINDER.txt"
+
+Reminder reminders[MAX_REMINDERS];
+int num_reminders = 0;
 
 
 void handleInput(int ch, int *current_page, int *selected_day, int *selected_year, const int *daysInMonth, int total_pages) {
@@ -41,6 +47,22 @@ void handleInput(int ch, int *current_page, int *selected_day, int *selected_yea
                 *selected_day = 1;
             }
             break;
+        case 'r':
+            {            
+                char reminder[MAX_REMINDER_LENGTH];
+                printf("Enter reminder: ");
+                fgets(reminder, MAX_REMINDER_LENGTH, stdin);
+
+                if (strlen(reminder) == 0)
+                {
+                    printf("Cancelled.\n");
+                    break;
+                }
+
+                createReminder(reminders, &num_reminders, reminder, *selected_day, *current_page, *selected_year);
+                saveReminders(reminders, num_reminders, REMINDER_PATH);
+            }
+            break;
         default:
             break;
     }
@@ -49,6 +71,8 @@ void handleInput(int ch, int *current_page, int *selected_day, int *selected_yea
 int main() {
     const char *months[] = MONTH_NAMES;
     const int days_in_month[] = DAYS_IN_MONTH;
+
+    loadReminders(reminders, &num_reminders, REMINDER_PATH);
 
     int current_page = 0;
     int selected_day = 1;
@@ -66,10 +90,12 @@ int main() {
     do {
         printf("Navigation: [Q] Previous month | [E] Next month | [W] Next year | [S] Previous year | [A] Previous day | [D] Next day\n");
         displayMonth(selected_year, current_page, days_in_month[current_page], selected_day, current_time, months[current_page]);
+        printf("\nReminder for %s %d:\n", months[current_page], selected_day);
+        viewReminder(reminders, num_reminders, selected_day, current_page, selected_year);
+        printf("\nPress [ESC] to exit.\n");
 
         user_input = getch();
         handleInput(user_input, &current_page, &selected_day, &selected_year, days_in_month, NUM_MONTHS);
-
         clearScreen();
     } while (user_input != KEY_ESCAPE);
 

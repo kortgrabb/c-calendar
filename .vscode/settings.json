@@ -2,6 +2,7 @@
     "files.associations": {
         "calendar.h": "c",
         "conio.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "reminder.h": "c"
     }
 }
