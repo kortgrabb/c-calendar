@@ -10,41 +10,30 @@
 #define KEY_UP 72
 #define KEY_DOWN 80
 
-int getFirstDayOfMonth(int year, int month)
-{
-    struct tm timeinfo = {0};
-    timeinfo.tm_year = year - 1900; // Year since 1900
-    timeinfo.tm_mon = month;        // Month, starting from 0
-    timeinfo.tm_mday = 1;           // First day of the month
-    mktime(&timeinfo);              // Normalize the tm structure
-    // Adjust day of the week to make Monday the first day
-    return (timeinfo.tm_wday == 0) ? 6 : timeinfo.tm_wday - 1; // Convert so that Monday is 0
-}
-
 void handleInput(int ch, int *current_page, int *selected_day, int *selected_year, const int *daysInMonth, int total_pages)
 {
     switch (ch)
     {
-    case KEY_LEFT:
+    case 'q':
         handlePageChange(current_page, -1, 0, total_pages - 1);
         break;
-    case KEY_RIGHT:
+    case 'e':
         handlePageChange(current_page, 1, 0, total_pages - 1);
         break;
-    case KEY_UP:
+    case 'w':
         (*selected_year)++;
         break;
-    case KEY_DOWN:
+    case 's':
         (*selected_year)--;
         break;
-    case 'w':
+    case 'a':
         (*selected_day)--;
         if (*selected_day < 1)
         {
             *selected_day = daysInMonth[*current_page];
         }
         break;
-    case 's':
+    case 'd':
         (*selected_day)++;
         if (*selected_day > daysInMonth[*current_page])
         {
@@ -60,7 +49,7 @@ int main()
 {
     const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    const int daysInMonth[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    const int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     const int total_pages = sizeof(months) / sizeof(months[0]);
     int current_page = 0;
@@ -78,18 +67,14 @@ int main()
     int ch = 0;
     do
     {
-        printf("Year: %d | "
-               "Day: %d\n",
-               selected_year, selected_day);
-        int startDay = getFirstDayOfMonth(selected_year, current_page);
-        displayMonth(months[current_page], daysInMonth[current_page], selected_day, startDay, current_time->tm_mday);
+        printf("Navigation: [Q] Previous month | [E] Next month | [W] Next year | [S] Previous year | [A] Previous day | [D] Next day\n");
+        displayMonth(selected_year, current_page, days_in_month[current_page], selected_day, current_time, months[current_page]);
 
-        ch = getch(); // Get the actual arrow keycode
-
-        handleInput(ch, &current_page, &selected_day, &selected_year, daysInMonth, total_pages);
+        ch = getch();
+        handleInput(ch, &current_page, &selected_day, &selected_year, days_in_month, total_pages);
 
         clearScreen();
-    } while (ch != KEY_ESCAPE && ch != 'q' && ch != 'Q');
+    } while (ch != KEY_ESCAPE);
 
     printf("Exiting...\n");
 
