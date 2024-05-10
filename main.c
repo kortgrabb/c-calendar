@@ -5,53 +5,51 @@
 #include "calendar.h"
 
 #define KEY_ESCAPE 27
-#define KEY_LEFT 75
-#define KEY_RIGHT 77
-#define KEY_UP 72
-#define KEY_DOWN 80
 
-void handleInput(int ch, int *current_page, int *selected_day, int *selected_year, const int *daysInMonth, int total_pages)
-{
+#define NUM_MONTHS 12
+#define BASE_YEAR 1900
+#define MONTH_NAMES {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"}
+#define DAYS_IN_MONTH {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}
+
+
+void handleInput(int ch, int *current_page, int *selected_day, int *selected_year, const int *daysInMonth, int total_pages) {
     switch (ch)
     {
-    case 'q':
-        handlePageChange(current_page, -1, 0, total_pages - 1);
-        break;
-    case 'e':
-        handlePageChange(current_page, 1, 0, total_pages - 1);
-        break;
-    case 'w':
-        (*selected_year)++;
-        break;
-    case 's':
-        (*selected_year)--;
-        break;
-    case 'a':
-        (*selected_day)--;
-        if (*selected_day < 1)
-        {
-            *selected_day = daysInMonth[*current_page];
-        }
-        break;
-    case 'd':
-        (*selected_day)++;
-        if (*selected_day > daysInMonth[*current_page])
-        {
-            *selected_day = 1;
-        }
-        break;
-    default:
-        break;
+        case 'q':
+            handlePageChange(current_page, -1, 0, total_pages - 1);
+            break;
+        case 'e':
+            handlePageChange(current_page, 1, 0, total_pages - 1);
+            break;
+        case 'w':
+            (*selected_year)++;
+            break;
+        case 's':
+            (*selected_year)--;
+            break;
+        case 'a':
+            (*selected_day)--;
+            if (*selected_day < 1)
+            {
+                *selected_day = daysInMonth[*current_page];
+            }
+            break;
+        case 'd':
+            (*selected_day)++;
+            if (*selected_day > daysInMonth[*current_page])
+            {
+                *selected_day = 1;
+            }
+            break;
+        default:
+            break;
     }
 }
 
-int main()
-{
-    const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-    const int days_in_month[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+int main() {
+    const char *months[] = MONTH_NAMES;
+    const int days_in_month[] = DAYS_IN_MONTH;
 
-    const int total_pages = sizeof(months) / sizeof(months[0]);
     int current_page = 0;
     int selected_day = 1;
     int selected_year = 0;
@@ -59,24 +57,21 @@ int main()
     time_t t = time(NULL);
     struct tm *current_time = localtime(&t);
 
-    current_page = current_time->tm_mon;          // Set current month as starting page
-    selected_year = current_time->tm_year + 1900; // Year since 1900
+    current_page = current_time->tm_mon;
+    selected_year = current_time->tm_year + BASE_YEAR;
 
     clearScreen();
 
-    int ch = 0;
-    do
-    {
+    int user_input = 0;
+    do {
         printf("Navigation: [Q] Previous month | [E] Next month | [W] Next year | [S] Previous year | [A] Previous day | [D] Next day\n");
         displayMonth(selected_year, current_page, days_in_month[current_page], selected_day, current_time, months[current_page]);
 
-        ch = getch();
-        handleInput(ch, &current_page, &selected_day, &selected_year, days_in_month, total_pages);
+        user_input = getch();
+        handleInput(user_input, &current_page, &selected_day, &selected_year, days_in_month, NUM_MONTHS);
 
         clearScreen();
-    } while (ch != KEY_ESCAPE);
-
-    printf("Exiting...\n");
+    } while (user_input != KEY_ESCAPE);
 
     return 0;
 }
