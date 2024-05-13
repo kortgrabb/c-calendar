@@ -78,9 +78,22 @@ int loadReminders(Reminder *reminders, int *num_reminders, const char *filename)
     {
         Reminder new_reminder;
         // allow spaces in reminder text
-        fscanf(file, "%d;%d;%d;%[^\n]\n", &new_reminder.day, &new_reminder.month, &new_reminder.year, new_reminder.reminder);
-        reminders[*num_reminders] = new_reminder;
-        (*num_reminders)++;
+        if(fscanf(file, "%d;%d;%d;%[^\n]\n", &new_reminder.day, &new_reminder.month, &new_reminder.year, new_reminder.reminder)) 
+        {
+            reminders[*num_reminders] = new_reminder;
+            (*num_reminders)++;
+
+            if (*num_reminders >= MAX_REMINDERS)
+            {
+                break;
+            }
+
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
     }
 
     fclose(file);

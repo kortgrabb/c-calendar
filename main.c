@@ -72,7 +72,25 @@ int main() {
     const char *months[] = MONTH_NAMES;
     const int days_in_month[] = DAYS_IN_MONTH;
 
-    loadReminders(reminders, &num_reminders, REMINDER_PATH);
+    if(loadReminders(reminders, &num_reminders, REMINDER_PATH) == 0) {
+        printf("Error loading reminders.\n");
+
+        printf("generate clean file? [y/n]\n");
+        char c = getch();
+
+        if(c == 'y' || c == 'Y') {
+            // delete everything in the file
+            FILE *file = fopen(REMINDER_PATH, "w");
+            if (file == NULL)
+            {
+                printf("Error opening file for writing.\n");
+                return 0;
+            }
+            fclose(file);
+        } else {
+            return 1;
+        }
+    }
 
     int current_page = 0;
     int selected_day = 1;
