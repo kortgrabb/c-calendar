@@ -106,7 +106,7 @@ int main() {
 
     int user_input = 0;
     do {
-        printf("Navigation: [Q] Previous month | [E] Next month | [W] Next year | [S] Previous year | [A] Previous day | [D] Next day\n");
+        printf("Navigation: [Q] Previous month | [E] Next month | [W] Next year | [S] Previous year | [A] Previous day | [D] Next day | [R] Add reminder\n");
         displayMonth(selected_year, current_page, days_in_month[current_page], selected_day, current_time, months[current_page]);
         printf("\nReminder for %s %d:\n", months[current_page], selected_day);
         viewReminder(reminders, num_reminders, selected_day, current_page, selected_year);
