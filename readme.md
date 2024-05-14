@@ -8,4 +8,4 @@ A simple cli calender written in c.
 - [x] View other years
 - [x] Account for leap-years
 - [ ] Holidays
-- [ ] Reminders/Events
+- [x] Reminders/Events
